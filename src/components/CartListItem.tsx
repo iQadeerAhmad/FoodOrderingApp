@@ -29,7 +29,7 @@ const CartListItem = ({ cartItem }: CartListItemProps) => {
             </View>
             <View style={styles.quantitySelector}>
                 <FontAwesome
-                    // onPress={() => updateQuantity(cartItem.id, -1)}
+                    // onPress={() => updateQuantity(cartItem.id, -1)} 
                     name="minus"
                     color="gray"
                     style={{ padding: 5 }}
