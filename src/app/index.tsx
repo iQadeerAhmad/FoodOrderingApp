@@ -1,4 +1,4 @@
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text, ActivityIndicator, SafeAreaView } from 'react-native';
 import React from 'react';
 import Button from '../components/Button';
 import { Link, Redirect } from 'expo-router';
@@ -9,7 +9,10 @@ const index = () => {
     const { session, loading } = useAuth()
 
     if (loading) {
-        return <ActivityIndicator />
+        return (
+            <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size={'large'} />
+            </SafeAreaView>)
     }
     if (!session) {
         return <Redirect href={'/sign-in'} />

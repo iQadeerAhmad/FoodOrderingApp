@@ -57,7 +57,9 @@ function RootLayoutNav() {
         <CartProvider >
 
           <StatusBar style="auto" />
-          <Stack>
+          <Stack initialRouteName='index'>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+
             <Stack.Screen name="(admin)" options={{ headerShown: false }} />
             <Stack.Screen name="(user)" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
