@@ -1,9 +1,10 @@
-import { View, FlatList, Platform } from 'react-native';
+import { View, FlatList, Platform, SafeAreaView, ActivityIndicator, Text } from 'react-native';
 
 
-import products from '@assets/data/products';
+
 import { ProductListItems } from '@components/ProductListItems';
 import { StatusBar } from 'expo-status-bar';
+import { useProductLIst } from '@/src/api/products';
 
 
 
@@ -11,6 +12,21 @@ import { StatusBar } from 'expo-status-bar';
 
 
 export default function MenuScreen() {
+
+  const { data: products, error, isLoading } = useProductLIst();
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size={'large'} />
+      </SafeAreaView>
+    )
+  }
+  if (error) {
+    return <Text>Failed to fetch products</Text>
+  }
+
+
   return (
     <View>
       {/* <ProductListItems product={products[0]} />
