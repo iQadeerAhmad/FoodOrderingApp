@@ -5,7 +5,8 @@ import * as Device from 'expo-device';
 import { defaultPizzaImage } from '@/src/components/ProductListItems';
 import Colors from '@/constants/Colors';
 import * as ImagePicker from 'expo-image-picker';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { useInsertProduct } from '@/src/api/products';
 
 
 const CreateProductScreen = () => {
@@ -17,6 +18,8 @@ const CreateProductScreen = () => {
 
     const { id } = useLocalSearchParams()
     const isUpdating = !!id
+
+    const { mutate: insertProduct } = useInsertProduct()
 
     const validateInput = () => {
         setErrors('')
@@ -51,8 +54,14 @@ const CreateProductScreen = () => {
 
 
         console.warn("Create Product", name)
+        insertProduct({ name, price: parseFloat(price), image }, {
+            onSuccess: () => {
+                resetFields()
+                router.back()
+            }
+        })
 
-        resetFields()
+
 
     }
     const onUpdateCreate = () => {
