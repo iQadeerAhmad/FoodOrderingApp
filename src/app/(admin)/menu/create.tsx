@@ -1,12 +1,12 @@
 import { View, Text, StyleSheet, TextInput, Platform, Image, Alert } from 'react-native'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from '@/src/components/Button'
 import * as Device from 'expo-device';
 import { defaultPizzaImage } from '@/src/components/ProductListItems';
 import Colors from '@/constants/Colors';
 import * as ImagePicker from 'expo-image-picker';
-import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { useInsertProduct } from '@/src/api/products';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useInsertProduct, useProduct, useUpdateProduct } from '@/src/api/products';
 
 
 const CreateProductScreen = () => {
@@ -16,10 +16,28 @@ const CreateProductScreen = () => {
     const [image, setImage] = useState<string | null>(null);
 
 
-    const { id } = useLocalSearchParams()
+    const { id: idString } = useLocalSearchParams()
+    const id = parseFloat(typeof idString === 'string' ? idString : idString?.[0])
     const isUpdating = !!id
 
     const { mutate: insertProduct } = useInsertProduct()
+    const { mutate: updateProduct } = useUpdateProduct()
+    const { data: updatingProduct } = useProduct(id)
+
+    const router = useRouter()
+
+    useEffect(() => {
+        setName(updatingProduct.name)
+        setPrice(updatingProduct.price.toString())
+        setImage(updatingProduct.image)
+    }, [updatingProduct])
+
+
+
+    const resetFields = () => {
+        setName('')
+        setPrice('')
+    }
 
     const validateInput = () => {
         setErrors('')
@@ -68,19 +86,30 @@ const CreateProductScreen = () => {
         if (!validateInput()) {
             return
         }
+        updateProduct({
+            id,
+            name,
+            price: parseFloat(price),
+            image,
+
+
+        },
+            {
+                onSuccess: () => {
+                    resetFields()
+                    router.back()
+                }
+            })
 
 
 
 
         console.warn("Update Product", name)
-        resetFields()
+
 
     }
 
-    const resetFields = () => {
-        setName('')
-        setPrice('')
-    }
+
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
