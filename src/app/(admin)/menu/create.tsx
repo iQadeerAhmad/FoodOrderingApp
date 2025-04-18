@@ -6,7 +6,7 @@ import { defaultPizzaImage } from '@/src/components/ProductListItems';
 import Colors from '@/constants/Colors';
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useInsertProduct, useProduct, useUpdateProduct } from '@/src/api/products';
+import { useDeleteProduct, useInsertProduct, useProduct, useUpdateProduct } from '@/src/api/products';
 
 
 const CreateProductScreen = () => {
@@ -14,6 +14,8 @@ const CreateProductScreen = () => {
     const [price, setPrice] = useState('')
     const [errors, setErrors] = useState('')
     const [image, setImage] = useState<string | null>(null);
+    const [deleted, setDeleted] = useState(false);
+
 
 
     const { id: idString } = useLocalSearchParams()
@@ -22,14 +24,15 @@ const CreateProductScreen = () => {
 
     const { mutate: insertProduct } = useInsertProduct()
     const { mutate: updateProduct } = useUpdateProduct()
-    const { data: updatingProduct } = useProduct(id)
+    const { data: updatingProduct } = useProduct(id, isUpdating && !deleted)
+    const { mutate: deleteProduct } = useDeleteProduct()
 
     const router = useRouter()
 
     useEffect(() => {
-        setName(updatingProduct.name)
-        setPrice(updatingProduct.price.toString())
-        setImage(updatingProduct.image)
+        setName(updatingProduct?.name)
+        setPrice(updatingProduct?.price.toString())
+        setImage(updatingProduct?.image)
     }, [updatingProduct])
 
 
@@ -129,6 +132,12 @@ const CreateProductScreen = () => {
 
     const onDelete = () => {
         console.warn("DELETE!!!")
+        deleteProduct(id, {
+            onSuccess: () => {
+                setDeleted(true);
+                router.replace('/(admin)');
+            }
+        })
     }
 
     const confirmDelete = () => {
