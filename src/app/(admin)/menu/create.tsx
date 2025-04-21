@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, Platform, Image, Alert } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Platform, Image, Alert, InteractionManager } from 'react-native'
 import { useEffect, useState } from 'react'
 import Button from '@/src/components/Button'
 import * as Device from 'expo-device';
@@ -135,7 +135,10 @@ const CreateProductScreen = () => {
         deleteProduct(id, {
             onSuccess: () => {
                 setDeleted(true);
-                router.replace('/(admin)');
+                InteractionManager.runAfterInteractions(() => {
+                    router.replace('/(admin)/menu');
+                });
+
             }
         })
     }
