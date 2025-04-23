@@ -3,11 +3,12 @@ import { StyleSheet, Image, Pressable } from 'react-native';
 import EditScreenInfo from '@/src/components/EditScreenInfo';
 import { Text, View } from '@components/Themed';
 import Colors from '@/constants/Colors';
-import { Product } from '../types';
+
 import { Link, useSegments } from 'expo-router';
+import { Tables } from '../types';
 
 type ProductListItemsProps = {
-  product: Product;
+  product: Tables<'products'>;
 }
 
 

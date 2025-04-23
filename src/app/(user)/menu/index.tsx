@@ -27,15 +27,6 @@ export default function MenuScreen() {
     return <Text>Failed to fetch products</Text>
   }
 
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     const { data, error } = await supabase.from('products').select('*')
-  //     console.log(error)
-  //     console.log(data)
-
-  //   }
-  //   fetchProducts()
-  // }, [])
 
   return (
     <View>
