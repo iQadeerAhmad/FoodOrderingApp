@@ -1,10 +1,13 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { supabase } from "../lib/supabase";
 import { Session } from "@supabase/supabase-js";
 
+// You might want to replace 'any' with a more specific profile type from your database.types.ts
+export type Profile = any;
+
 type AuthData = {
     session: Session | null;
-    profile: any | null;
+    profile: Profile | null; // Changed from any to Profile type
     loading: boolean;
     isAdmin: boolean;
 };
@@ -16,36 +19,42 @@ const AuthContext = createContext<AuthData>({
     isAdmin: false,
 })
 
-export default function AuthProvider({ children }) {
+
+
+export default function AuthProvider({ children }: { children: ReactNode }) { // Typed children
     const [session, setSession] = useState<Session | null>(null)
-    const [profile, setProfile] = useState(null)
+    const [profile, setProfile] = useState<Profile | null>(null) // Typed profile state
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const fetchSession = async () => {
-            const { data: { session } } = await supabase.auth.getSession()
-            setSession(session)
+        setLoading(true); // Set loading true at the start
+
+        // Listen for authentication state changes
+        const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+            setSession(session); // Update session state
 
             if (session) {
-                // fetch profile
-                const { data } = await supabase
+                // Fetch profile if session exists
+                const { data: profileData } = await supabase
                     .from('profiles')
                     .select('*')
                     .eq('id', session.user.id)
                     .single();
-                setProfile(data || null);
+                setProfile(profileData || null);
+            } else {
+                // Clear profile if session is null (e.g., on logout)
+                setProfile(null);
             }
+            setLoading(false); // Set loading to false after session and profile are handled
+        });
 
-            setLoading(false)
-
-        }
-        supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session)
-        })
-        fetchSession();
-
-
-    }, [])
+        // Cleanup function to remove the listener when the component unmounts
+        return () => {
+            if (authListener && authListener.subscription) {
+                authListener.subscription.unsubscribe();
+            }
+        };
+    }, []); // Empty dependency array: run once on mount and clean up on unmount
 
 
 
