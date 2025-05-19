@@ -1,8 +1,21 @@
-import { Text, FlatList } from "react-native"
+import { Text, FlatList, ActivityIndicator, SafeAreaView } from "react-native"
 import orders from "@/assets/data/orders"
 import OrderListItem from "@/src/components/OrderListItem"
+import { useAdminOrderLIst } from "@/src/api/orders";
 
 export default function OrdersScreen() {
+    const { data: orders, isLoading, error } = useAdminOrderLIst({ archived: true });
+
+    if (isLoading) {
+        return (
+            <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size={'large'} />
+            </SafeAreaView>
+        )
+    }
+    if (error) {
+        return <Text>Failed to fetch</Text>
+    }
     return (
         <FlatList
             data={orders}

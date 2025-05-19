@@ -1,19 +1,29 @@
 import orders from '@/assets/data/orders'
 import Colors from '@/constants/Colors'
+import { useOrderDetails } from '@/src/api/orders'
 import OrderItemListItem from '@/src/components/OrderItemListItem'
 import OrderListItem from '@/src/components/OrderListItem'
 import { OrderStatusList } from '@/src/types'
 import { useLocalSearchParams, Stack } from 'expo-router'
-import { FlatList, Pressable, Text, View } from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, SafeAreaView, Text, View } from 'react-native'
 
 export default function OrdersDetailsScreen() {
-    const { id } = useLocalSearchParams()
+    const { id: idString } = useLocalSearchParams()
+    const id = parseFloat(typeof idString === 'string' ? idString : idString[0])
 
-    const order = orders.find((o) => o.id.toString() === id)
-    if (!order) {
+    const { data: order, isLoading, error } = useOrderDetails(id)
+
+
+    if (isLoading) {
+        return (
+            <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size={'large'} />
+            </SafeAreaView>
+        )
+    }
+    if (error) {
         return <Text>Order not found</Text>
     }
-
     return (
         <View style={{ padding: 10, gap: 10 }}>
             <Stack.Screen options={{ title: `Order #${id}` }} />
