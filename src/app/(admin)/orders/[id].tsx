@@ -1,6 +1,6 @@
 import orders from '@/assets/data/orders'
 import Colors from '@/constants/Colors'
-import { useOrderDetails } from '@/src/api/orders'
+import { useOrderDetails, useUpdateOrder } from '@/src/api/orders'
 import OrderItemListItem from '@/src/components/OrderItemListItem'
 import OrderListItem from '@/src/components/OrderListItem'
 import { OrderStatusList } from '@/src/types'
@@ -12,8 +12,14 @@ export default function OrdersDetailsScreen() {
     const id = parseFloat(typeof idString === 'string' ? idString : idString[0])
 
     const { data: order, isLoading, error } = useOrderDetails(id)
+    const { mutate: updateOrder } = useUpdateOrder()
 
-
+    const updateStatus = (status: string) => {
+        updateOrder({
+            id: id,
+            updatedFields: { status }
+        })
+    }
     if (isLoading) {
         return (
             <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -38,7 +44,7 @@ export default function OrdersDetailsScreen() {
                             {OrderStatusList.map((status) => (
                                 <Pressable
                                     key={status}
-                                    onPress={() => console.warn('Update status')}
+                                    onPress={() => updateStatus(status)}
                                     style={{
                                         borderColor: Colors.light.tint,
                                         borderWidth: 1,
