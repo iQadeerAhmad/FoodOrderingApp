@@ -21,9 +21,10 @@ export default function OrdersDetailsScreen() {
             </SafeAreaView>
         )
     }
-    if (error) {
+    if (error || !order) {
         return <Text>Order not found</Text>
     }
+
     return (
         <View style={{ padding: 10, gap: 10 }}>
             <Stack.Screen options={{ title: `Order #${id}` }} />

@@ -41,7 +41,7 @@ export const useOrderDetails = (id: number) => {
         queryKey: ['orders', id],
 
         queryFn: async () => {
-            const { data, error } = await supabase.from('orders').select('*').eq('id', id).single();
+            const { data, error } = await supabase.from('orders').select('*, order_items(*,products(*))').eq('id', id).single();
             if (error) {
                 throw new Error(error.message)
             }
