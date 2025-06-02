@@ -8,6 +8,8 @@ import { PizzaSize } from '@/src/types'
 import { FontAwesome } from '@expo/vector-icons'
 import Colors from '@/constants/Colors'
 import { useProduct } from '@/src/api/products'
+import { defaultPizzaImage } from '@/src/components/ProductListItems'
+import RemoteImage from '@/src/components/RemoteImage'
 
 
 
@@ -65,7 +67,11 @@ const ProductDetailsScreen = () => {
       }} />
 
       <Stack.Screen options={{ title: product?.name }} />
-      <Image resizeMode='contain' style={styles.image} source={{ uri: product.image || "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png" }} />
+      <RemoteImage resizeMode='contain'
+        style={styles.image}
+        path={product?.image}
+        fallback={defaultPizzaImage}
+      />
 
 
 

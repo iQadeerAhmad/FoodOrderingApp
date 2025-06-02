@@ -6,6 +6,8 @@ import Button from '@/src/components/Button'
 import { useCart } from '@/src/providers/CartProvider'
 import { PizzaSize } from '@/src/types'
 import { useProduct } from '@/src/api/products'
+import RemoteImage from '@/src/components/RemoteImage'
+import { defaultPizzaImage } from '@/src/components/ProductListItems'
 
 
 
@@ -44,7 +46,11 @@ const ProductDetailsScreen = () => {
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: product?.name }} />
-      <Image resizeMode='contain' style={styles.image} source={{ uri: product.image || "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png" }} />
+      <RemoteImage resizeMode='contain'
+        style={styles.image}
+        path={product?.image}
+        fallback={defaultPizzaImage}
+      />
 
       <Text>Select Size</Text>
       <View style={styles.sizes}>
