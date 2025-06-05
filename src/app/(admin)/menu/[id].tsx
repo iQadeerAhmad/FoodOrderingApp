@@ -76,7 +76,7 @@ const ProductDetailsScreen = () => {
 
 
 
-      <Text style={styles.price}>${product.name}</Text>
+      <Text style={styles.price}>{product.name}</Text>
       <Text style={styles.price}>${product.price}</Text>
 
     </View>

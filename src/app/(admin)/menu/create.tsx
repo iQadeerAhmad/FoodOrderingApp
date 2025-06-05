@@ -65,7 +65,7 @@ const CreateProductScreen = () => {
     }
     const onSubmit = () => {
         if (isUpdating) {
-            onUpdateCreate()
+            onUpdate()
         } else {
             onCreate()
         }
@@ -91,15 +91,19 @@ const CreateProductScreen = () => {
 
 
     }
-    const onUpdateCreate = () => {
+    const onUpdate = async () => {
         if (!validateInput()) {
             return
         }
+
+
+        const imagePath = await uploadImage()
+
         updateProduct({
             id,
             name,
             price: parseFloat(price),
-            image,
+            image: imagePath,
 
 
         },
