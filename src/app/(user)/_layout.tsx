@@ -1,7 +1,7 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Redirect, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import { ActivityIndicator, Pressable, SafeAreaView } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/src/components/useColorScheme';
@@ -18,10 +18,20 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { session } = useAuth()
+  const { session, loading } = useAuth()
 
+  // Don't redirect while loading
+  if (loading) {
+    return (
+      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size={'large'} />
+      </SafeAreaView>
+    )
+  }
+
+  // Only redirect if we're sure there's no session
   if (!session) {
-    return <Redirect href={'/'} />
+    return <Redirect href="/sign-in" />;
   }
 
   return (
@@ -39,16 +49,22 @@ export default function TabLayout() {
           title: 'Menu',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="cutlery" color={color} />,
-
         }}
       />
       <Tabs.Screen
         name="orders"
-
         options={{
           title: 'Orders',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
     </Tabs>

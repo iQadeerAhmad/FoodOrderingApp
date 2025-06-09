@@ -19,8 +19,6 @@ const AuthContext = createContext<AuthData>({
     isAdmin: false,
 })
 
-
-
 export default function AuthProvider({ children }: { children: ReactNode }) { // Typed children
     const [session, setSession] = useState<Session | null>(null)
     const [profile, setProfile] = useState<Profile | null>(null) // Typed profile state
@@ -55,8 +53,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) { //
             }
         };
     }, []); // Empty dependency array: run once on mount and clean up on unmount
-
-
 
     console.log(profile)
     return (
